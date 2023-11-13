@@ -58,13 +58,15 @@ class TextAnalyticsFunctions:
             raise ValueError("Model not trained. Call train() first.")
 
         if self.model_type == "rules":
-            return self.predict_rules_model(text)
+            prediction, metadata = self.predict_rules_model(text)
         elif self.model_type == "ml":
-            return self.predict_ml_model(text)
+            prediction, metadata = self.predict_ml_model(text)
         else:
             raise ValueError(
                 "Invalid model type. Supported types are 'rules' and 'ml'."
             )
+
+        return dict(category=self.sdg, prediction=prediction, metadata=metadata)
 
     def save(self, file_path):
         """

@@ -7,22 +7,39 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
         super().__init__(sdg)
 
         # Uncomment the one you will be creating
+        # --------------------------------------
         # self.model_type = "rules"
         # self.model_type = "ml"
 
-        # Add other variables you want to keep in the model
+        # Add other variables you need to persist across the model
 
     def predict_rules_model(self, text):
+        metadata = {}
+        prediction = 0
+
         # Implement rules-based prediction logic
-        pass
+        #
+        #
+        #
+        # End of implementation
+
+        return prediction, metadata
 
     def train_ml_model(self, training_text, training_labels):
         # Implement machine learning-based training logic
         pass
 
     def predict_ml_model(self, text):
+        metadata = {}
+        prediction = 0
+
         # Implement machine learning-based prediction logic
-        pass
+        #
+        #
+        #
+        # End of implementation
+
+        return prediction, metadata
 
     def cross_validate(self, X, y, n_splits=5):
         """
