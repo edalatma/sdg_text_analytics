@@ -68,7 +68,7 @@ def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
 
     # Iterate over Python files in the models directory
-    for textanalytics_class in iterate_models():
+    for filename, textanalytics_class in iterate_models():
 
         class TestImplementation(TestMakePredictionFunction):
             def setUp(self):

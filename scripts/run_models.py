@@ -38,7 +38,7 @@ def iterate_models():
 
             # Check if the module has a "predict" function
             if hasattr(module, "TextAnalyticsModel"):
-                yield module.TextAnalyticsModel
+                yield filename, module.TextAnalyticsModel
 
 
 def main():
