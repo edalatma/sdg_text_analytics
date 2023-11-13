@@ -30,7 +30,7 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
 
         Parameters:
             - X (list or array-like): Input features.
-            - y (DataFrame): Target labels (multi-label).
+            - y (list or array-like): Target labels (binary).
             - n_splits (int): Number of splits in cross-validation.
 
         Returns:

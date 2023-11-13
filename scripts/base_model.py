@@ -8,6 +8,13 @@ class TextAnalyticsFunctions:
         self.model = None
 
     def train(self, training_text, training_labels):
+        """
+        Train model using set of text and expected labels.
+
+        Parameters:
+            - training_text (list or array-like): Input features.
+            - training_labels (list or array-like): Target labels (binary).
+        """
         if self.model_type == "rules":
             self.model = "ignore"
         elif self.model_type == "ml":
