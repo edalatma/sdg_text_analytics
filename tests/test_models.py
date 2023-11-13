@@ -1,16 +1,13 @@
 import unittest
 import os
 import importlib
+from scripts.base_model import load_model
 
 
 class TestMakePredictionFunction(unittest.TestCase):
     def setUp(self):
         # Input outline for testing
         self.outline = "This is a sample outline for testing purposes."
-
-        # Make predictions using the function
-        with self.subTest():
-            self.predictions = self.predict(self.outline)
 
         # Available SDGs
         self.available_sdgs = [
@@ -31,8 +28,18 @@ class TestMakePredictionFunction(unittest.TestCase):
             "SDG-15",
             "SDG-16",
         ]
+        with self.subTest():
+            self.test_model = self.model(self.available_sdgs[0])
 
-    def test_pred_structure(self):
+    def test_load_models(self):
+        # Make predictions using the function
+        for SDG in self.available_sdgs:
+            with self.subTest():
+                self.sdg_model = self.model(SDG)
+
+    def test_saving_and_loading(self):
+        # self.test_model.save("test.dill")
+        # loaded_model = load_model("test.dill")
         pass
 
     def test_span(self):
@@ -72,11 +79,11 @@ def load_tests(loader, standard_tests, pattern):
             module = importlib.import_module(f"models.{module_name}")
 
             # Check if the module has a "predict" function
-            if hasattr(module, "predict"):
+            if hasattr(module, "TextAnalyticsModel"):
 
                 class TestImplementation(TestMakePredictionFunction):
                     def setUp(self):
-                        self.predict = module.predict
+                        self.model = module.TextAnalyticsModel
                         super().setUp()
 
                 test_suite.addTest(unittest.makeSuite(TestImplementation))

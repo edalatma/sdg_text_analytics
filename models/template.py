@@ -1,41 +1,64 @@
-def predict(text: str) -> list[dict]:
-    """
-    Generate SDG predictions for a piece of text using an NLP model.
-
-    Parameters:
-    - text (str): A string representing the outline or course description
-        for which predictions are to be made.
-
-    Returns:
-    list[dict]: A dictionary containing the model's predictions and additional metadata.
-        Each dictionary value in the list contains the SDG that is predicted to belong
-        to the text and metadata that provides supporting details that led to the positive
-        prediction. This could include a confidence score that passed a certain threshold,
-        a span of text that matches a keyword associated with an SDG or other details.
-
-        Negative predictions should not be included in the list.
+from scripts.base_model import TextAnalyticsFunctions
+from sklearn.model_selection import KFold, GridSearchCV
 
 
-    Example:
-    >>> outline = "This is a sample outline for testing purposes."
-    >>> predictions = main(outline)
-    >>> print(predictions)
-    [
-        {
-            "category": "SDG-1",
-            "metadata": {
-                "confidence": 0.85,
-                "spans": [[0, 10, "sample"]],
-                "other": {} # Other information to include
-            }
-        },
-        {
-            "category": "SDG-8",
-            "metadata": {
-                "confidence": 0.6,
-                "spans": [[16, 34, "test"]],
-                "other": {} # Other information to include
-            }
-        }
-    ]
-    """
+class TextAnalyticsModel(TextAnalyticsFunctions):
+    def __init__(self, sdg):
+        super().__init__(sdg)
+
+        # Uncomment the one you will be creating
+        # self.model_type = "rules"
+        # self.model_type = "ml"
+
+        # Add other variables you want to keep in the model
+
+    def predict_rules_model(self, text):
+        # Implement rules-based prediction logic
+        pass
+
+    def train_ml_model(self, training_text, training_labels):
+        # Implement machine learning-based training logic
+        pass
+
+    def predict_ml_model(self, text):
+        # Implement machine learning-based prediction logic
+        pass
+
+    def cross_validate(self, X, y, n_splits=5):
+        """
+        Perform cross-validation, optimize hyperparameters, and return the best model.
+
+        Parameters:
+            - X (list or array-like): Input features.
+            - y (DataFrame): Target labels (multi-label).
+            - n_splits (int): Number of splits in cross-validation.
+
+        Returns:
+            - float: Average accuracy across cross-validation folds.
+        """
+        if self.model_type == "rules":
+            raise ValueError("Cross-validation not supported for rules-based models.")
+
+        if self.model_type == "ml":
+            kf = KFold(n_splits=n_splits, shuffle=True, random_state=1)
+            grid_search = GridSearchCV(
+                self.model, self.hyperparameters, cv=kf, scoring="accuracy"
+            )
+            grid_search.fit(X, y)
+
+            self.model = grid_search.best_estimator_
+            best_accuracy = grid_search.best_score_
+
+            return best_accuracy
+        else:
+            raise ValueError(
+                "Invalid model type. Supported types are 'rules' and 'ml'."
+            )
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
