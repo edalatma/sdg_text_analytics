@@ -59,7 +59,7 @@ The `tests` directory is reserved for unit tests and test data. Writing tests fo
 
 3. **Run Tox:**
    
-   Execute the following command to run tests using Tox:
+   Execute the following command to run tests and setup directories using Tox:
    ```bash
    tox
    ```
