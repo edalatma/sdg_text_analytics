@@ -49,7 +49,7 @@ The `tests` directory is reserved for unit tests and test data. Writing tests fo
 1. **Clone the Repository:**
    ```bash
    git clone https://github.com/edalatma/sdg_text_analytics.git
-   cd your-project
+   cd sdg_text_analytics
    ```
 
 2. **Install Tox:**
