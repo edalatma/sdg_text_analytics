@@ -70,10 +70,10 @@ def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
 
     # Get the path to the models directory
-    implementations_path = os.path.join(os.path.dirname(__file__), "..", "models")
+    model_path = os.path.join(os.path.dirname(__file__), "..", "models")
 
     # Iterate over Python files in the models directory
-    for filename in os.listdir(implementations_path):
+    for filename in os.listdir(model_path):
         if filename.endswith(".py") and not filename.startswith("__"):
             module_name = os.path.splitext(filename)[0]
             module = importlib.import_module(f"models.{module_name}")
