@@ -1,7 +1,7 @@
 import unittest
 import os
 import importlib
-from scripts.base_model import load_model
+from scripts.run_models import iterate_models, load_model
 
 
 class TestMakePredictionFunction(unittest.TestCase):
@@ -29,13 +29,13 @@ class TestMakePredictionFunction(unittest.TestCase):
             "SDG-16",
         ]
         with self.subTest():
-            self.test_model = self.model(self.available_sdgs[0])
+            self.test_model = self.textanalytics_class(self.available_sdgs[0])
 
     def test_load_models(self):
         # Make predictions using the function
         for SDG in self.available_sdgs:
             with self.subTest():
-                self.sdg_model = self.model(SDG)
+                self.sdg_model = self.textanalytics_class(SDG)
 
     def test_saving_and_loading(self):
         # self.test_model.save("test.dill")
@@ -69,24 +69,15 @@ def load_tests(loader, standard_tests, pattern):
     """
     test_suite = unittest.TestSuite()
 
-    # Get the path to the models directory
-    model_path = os.path.join(os.path.dirname(__file__), "..", "models")
-
     # Iterate over Python files in the models directory
-    for filename in os.listdir(model_path):
-        if filename.endswith(".py") and not filename.startswith("__"):
-            module_name = os.path.splitext(filename)[0]
-            module = importlib.import_module(f"models.{module_name}")
+    for textanalytics_class in iterate_models():
 
-            # Check if the module has a "predict" function
-            if hasattr(module, "TextAnalyticsModel"):
+        class TestImplementation(TestMakePredictionFunction):
+            def setUp(self):
+                self.textanalytics_class = textanalytics_class
+                super().setUp()
 
-                class TestImplementation(TestMakePredictionFunction):
-                    def setUp(self):
-                        self.model = module.TextAnalyticsModel
-                        super().setUp()
-
-                test_suite.addTest(unittest.makeSuite(TestImplementation))
+        test_suite.addTest(unittest.makeSuite(TestImplementation))
 
     return test_suite
 

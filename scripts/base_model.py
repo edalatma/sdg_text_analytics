@@ -1,6 +1,3 @@
-import dill
-
-
 class TextAnalyticsFunctions:
     def __init__(self, sdg):
         self.sdg = sdg
@@ -80,19 +77,3 @@ class TextAnalyticsFunctions:
 
     def __repr__(self):
         return f"{self.sdg}__{self.model_type}__{self.model}"
-
-
-def load_model(file_path):
-    """
-    Load the TextAnalyticsModel instance from a file.
-
-    Parameters:
-        - file_path (str): File path to load the model from.
-
-    Returns:
-        - TextAnalyticsModel: Loaded model instance.
-    """
-    with open(file_path, "rb") as file:
-        loaded_model = dill.load(file)
-
-    return loaded_model
