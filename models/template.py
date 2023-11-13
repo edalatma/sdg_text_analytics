@@ -26,8 +26,15 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
         return prediction, metadata
 
     def train_ml_model(self, training_text, training_labels):
+        model = None
+
         # Implement machine learning-based training logic
-        pass
+        #
+        #
+        #
+        # End of implementation
+
+        return model
 
     def predict_ml_model(self, text):
         metadata = {}
