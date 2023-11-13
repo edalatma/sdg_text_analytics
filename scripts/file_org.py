@@ -15,6 +15,8 @@ FILENAME_OPTIONS = {
     ),
 }
 
+DOCCANO_FORMAT = os.path.join(current_dir, "..", "data/doccano_export/*")
+
 
 def check_datatype(datatype):
     """
@@ -190,8 +192,7 @@ def get_doccano_export_paths():
     - Generator: Yields a tuple containing the project name and corresponding list of Pandas
         DataFrames for each directory
     """
-    project_dir = os.path.join(current_dir, "..", "data/doccano_export/*")
-    project_paths = glob(project_dir)
+    project_paths = glob(DOCCANO_FORMAT)
 
     for project_path in project_paths:
         project_name = os.path.basename(project_path)
@@ -203,3 +204,14 @@ def get_doccano_export_paths():
         )
         dataframes = [load_data(path) for path in dataframe_paths]
         yield project_name, dataframes
+
+
+def prepare_dirs():
+    directory = os.path.dirname(DOCCANO_FORMAT)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    for path in FILENAME_OPTIONS.values():
+        directory = os.path.dirname(path)
+        if not os.path.exists(directory):
+            os.makedirs(directory)
