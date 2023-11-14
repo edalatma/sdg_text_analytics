@@ -14,32 +14,6 @@ TODO:
 """
 
 
-def stratified_five_fold_cv_generator(df):
-    """
-    Generate train and dev sets for stratified five-fold cross-validation.
-
-    Parameters:
-    - df (pd.DataFrame): The input DataFrame to be split.
-    - target_column (str): The column used for stratification.
-    - seed (int): Seed for reproducibility.
-
-    Yields:
-    - train_set (pd.DataFrame): Training set for the current fold.
-    - dev_set (pd.DataFrame): Development set for the current fold.
-    """
-
-    # Use StratifiedKFold for stratified five-fold cross-validation
-    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=SEED)
-
-    # Stratify over department because it was consistently stratify both
-    # grad and undergrad courses. This is because most grad courses appear
-    # under "School of Graduate Studies" rather than the undergrad faculties
-    for train_index, dev_index in skf.split(df, df["DEPARTMENT"]):
-        train_set = df.iloc[train_index]
-        dev_set = df.iloc[dev_index]
-        yield train_set, dev_set
-
-
 def split_data(df):
     """
     Split a DataFrame into train, dev, test, and train+dev sets.
