@@ -8,12 +8,18 @@ import os
 current_dir = os.path.dirname(__file__)
 PREPARE_DATA_PATH = lambda ext: os.path.join(current_dir, "..", "data", ext)
 
+# Location users place data
+###########################
+
 # Original doccano exports placed here
 DOCCANO_EXPORT_FILES = lambda project_name="*": PREPARE_DATA_PATH(
     f"doccano_export/{project_name}/*.jsonl"
 )
 # Doccano export project dirs placed here
 DOCCANO_EXPORT_DIRS = PREPARE_DATA_PATH("doccano_export/*")
+
+# Location data is generated
+############################
 
 # Points to combined doccano export paths
 RAW_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(f"raw/{project_name}.jsonl")
