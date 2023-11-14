@@ -2,25 +2,26 @@ import pandas as pd
 from glob import glob
 import os
 from scripts.variables import (
-    FILENAME_OPTIONS,
-    DOCCANO_DIRS_PATH,
-    DOCCANO_EXPORTS_TEMPLATE,
+    PROJECTNAME_DATA_PATHS,
+    SDGMODEL_DATA_PATHS,
+    DOCCANO_EXPORT_DIRS,
+    DOCCANO_EXPORT_FILES,
 )
 
 
 def check_datatype(datatype):
     """
-    Checks if the provided datatype is a valid key in FILENAME_OPTIONS.
+    Checks if the provided datatype is a valid key in PROJECTNAME_DATA_PATHS.
 
     Parameters:
     - datatype (str): The datatype to be checked.
 
     Raises:
-    - ValueError: If the provided datatype is not a valid key in FILENAME_OPTIONS.
+    - ValueError: If the provided datatype is not a valid key in PROJECTNAME_DATA_PATHS.
     """
-    if datatype not in FILENAME_OPTIONS:
+    if datatype not in PROJECTNAME_DATA_PATHS:
         raise ValueError(
-            f"Invalid datatype: {datatype}. Supported datatypes are {list(FILENAME_OPTIONS.keys())}."
+            f"Invalid datatype: {datatype}. Supported datatypes are {list(PROJECTNAME_DATA_PATHS.keys())}."
         )
 
 
@@ -68,21 +69,20 @@ def iterdatatype_data(datatype: str) -> tuple[str, pd.DataFrame]:
     Iterates over JSON files based on the specified datatype.
 
     Parameters:
-    - datatype (str): The type of data to iterate over, which should be one of the keys in FILENAME_OPTIONS.
+    - datatype (str): The type of data to iterate over, which should be one of the keys in PROJECTNAME_DATA_PATHS.
 
-    Options in FILENAME_OPTIONS:
+    Options in PROJECTNAME_DATA_PATHS:
     - 'raw': Raw data files in the 'data/raw/' directory with a '*.json' extension.
     - 'test': Processed test data files in the 'data/processed/' directory ending with '__test.json'.
     - 'train': Processed training data files in the 'data/processed/' directory ending with '__train.json'.
     - 'traindev': Processed training and development data files in the 'data/processed/' directory ending with '__traindev.json'.
     - 'dev': Processed development data files in the 'data/processed/' directory ending with '__dev.json'.
-    - 'prediction': Prediction data files in the 'data/predictions/' directory ending with '__predictions.json'.
 
     Returns:
     - Generator: Yields a tuple containing the project name and the corresponding Pandas DataFrame for each JSON file.
 
     Raises:
-    - ValueError: If the provided datatype is not a valid key in FILENAME_OPTIONS.
+    - ValueError: If the provided datatype is not a valid key in PROJECTNAME_DATA_PATHS.
 
     Example:
     ```
@@ -92,7 +92,7 @@ def iterdatatype_data(datatype: str) -> tuple[str, pd.DataFrame]:
         # Your data processing logic here
     ```
     """
-    query = FILENAME_OPTIONS[datatype]
+    query = PROJECTNAME_DATA_PATHS[datatype]()
     for path in glob(query):
         project_name = get_project_name(datatype, path)
         data = load_data(path)
@@ -129,7 +129,7 @@ def get_file_path(datatype: str, project_name: str):
     - str: The file path corresponding to the project and datatype.
     """
 
-    file_path = FILENAME_OPTIONS[datatype].replace("*", project_name)
+    file_path = PROJECTNAME_DATA_PATHS[datatype](project_name)
     return file_path
 
 
@@ -145,8 +145,8 @@ def get_project_mappings(project_name):
     """
     project_mappings = {}
 
-    for datatype, query_template in FILENAME_OPTIONS.items():
-        path = query_template.replace("*", project_name)
+    for datatype, query_template in PROJECTNAME_DATA_PATHS.items():
+        path = query_template(project_name)
         if os.path.exists(path):
             project_mappings[datatype] = path
 
@@ -162,8 +162,8 @@ def get_all_project_names():
     """
     all_project_names = set()
 
-    for datatype, query in FILENAME_OPTIONS.items():
-        matching_paths = glob(query)
+    for datatype, query_template in PROJECTNAME_DATA_PATHS.items():
+        matching_paths = glob(query_template())
 
         # Extract project names from the file paths
         project_names = [get_project_name(datatype, path) for path in matching_paths]
@@ -182,22 +182,34 @@ def get_doccano_export_paths():
     - Generator: Yields a tuple containing the project name and corresponding list of Pandas
         DataFrames for each directory
     """
-    project_paths = glob(DOCCANO_DIRS_PATH)
+    project_paths = glob(DOCCANO_EXPORT_DIRS)
 
     for project_path in project_paths:
         project_name = os.path.basename(project_path)
 
-        dataframe_paths = glob(DOCCANO_EXPORTS_TEMPLATE(project_name))
+        dataframe_paths = glob(DOCCANO_EXPORT_FILES(project_name))
         dataframes = [load_data(path) for path in dataframe_paths]
         yield project_name, dataframes
 
 
 def prepare_dirs():
-    directory = os.path.dirname(DOCCANO_DIRS_PATH)
+    """
+    Ensure the existence of directories within the 'data/' path.
+
+    This function checks if the specified subdirectories exist within the 'data/'
+    directory. If not, it creates them. The goal is to ensure that the required
+    directory structure is in place for storing or organizing data.
+    """
+    directory = os.path.dirname(DOCCANO_EXPORT_DIRS)
     if not os.path.exists(directory):
         os.makedirs(directory)
 
-    for path in FILENAME_OPTIONS.values():
-        directory = os.path.dirname(path)
+    for path_template in PROJECTNAME_DATA_PATHS.values():
+        directory = os.path.dirname(path_template())
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+
+    for path_template in SDGMODEL_DATA_PATHS.values():
+        directory = os.path.dirname(path_template())
         if not os.path.exists(directory):
             os.makedirs(directory)

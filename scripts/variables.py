@@ -6,27 +6,53 @@ import os
 
 # Maps to `scripts/`
 current_dir = os.path.dirname(__file__)
+PREPARE_DATA_PATH = lambda ext: os.path.join(current_dir, "..", "data", ext)
 
-# DATA PATHS
-FILENAME_OPTIONS = {
-    "raw": os.path.join(current_dir, "..", "data/raw/*.jsonl"),
-    "test": os.path.join(current_dir, "..", "data/processed/*__test.jsonl"),
-    "train": os.path.join(current_dir, "..", "data/processed/*__train.jsonl"),
-    "traindev": os.path.join(current_dir, "..", "data/processed/*__traindev.jsonl"),
-    "dev": os.path.join(current_dir, "..", "data/processed/*__dev.jsonl"),
-    "predictions": os.path.join(
-        current_dir, "..", "data/predictions/*__predictions.jsonl"
-    ),
+# Original doccano exports placed here
+DOCCANO_EXPORT_FILES = lambda project_name="*": PREPARE_DATA_PATH(
+    f"doccano_export/{project_name}/*.jsonl"
+)
+# Doccano export project dirs placed here
+DOCCANO_EXPORT_DIRS = PREPARE_DATA_PATH("doccano_export/*")
+
+# Points to combined doccano export paths
+RAW_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(f"raw/{project_name}.jsonl")
+
+# Points to train, dev, test, traindev paths
+TEST_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
+    f"processed/{project_name}__test.jsonl"
+)
+TRAIN_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
+    f"processed/{project_name}__train.jsonl"
+)
+TRAINDEV_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
+    f"processed/{project_name}__traindev.jsonl"
+)
+DEV_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
+    f"processed/{project_name}__dev.jsonl"
+)
+# Paths that use "project_name"
+PROJECTNAME_DATA_PATHS = {
+    "raw": RAW_TEMPLATE,
+    "test": TEST_TEMPLATE,
+    "train": TRAIN_TEMPLATE,
+    "traindev": TRAINDEV_TEMPLATE,
+    "dev": DEV_TEMPLATE,
 }
 
-# DOCCANO EXPORT DATA DIRS
-DOCCANO_DIRS_PATH = os.path.join(current_dir, "..", "data/doccano_export/*")
-DOCCANO_EXPORTS_TEMPLATE = lambda project_name: os.path.join(
-    current_dir, "..", f"data/doccano_export/{project_name}/*.jsonl"
+# Model paths
+MODEL_TEMPLATE = lambda sdg="*", model_name="*": PREPARE_DATA_PATH(
+    f"trained_models/{sdg}-{model_name}.dill"
 )
-
-# MODEL FILENAME
-GET_MODEL_FILENAME = lambda sdg, model_name: f"{sdg}__{model_name}.dill"
+# Prediction paths
+PREDICTIONS_TEMPLATE = lambda sdg="*", model_name="*": PREPARE_DATA_PATH(
+    f"predictions/{sdg}-{model_name}__predictions.jsonl"
+)
+# Paths that use "sdg-model_name"
+SDGMODEL_DATA_PATHS = {
+    "models": MODEL_TEMPLATE,
+    "predictions": PREDICTIONS_TEMPLATE,
+}
 
 ##################
 # DATA VARIABLES #
