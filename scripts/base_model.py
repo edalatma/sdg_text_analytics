@@ -1,3 +1,6 @@
+import dill
+
+
 class TextAnalyticsFunctions:
     def __init__(self, sdg):
         self.sdg = sdg
