@@ -1,21 +1,7 @@
 import pandas as pd
 from glob import glob
 import os
-
-current_dir = os.path.dirname(__file__)
-
-FILENAME_OPTIONS = {
-    "raw": os.path.join(current_dir, "..", "data/raw/*.jsonl"),
-    "test": os.path.join(current_dir, "..", "data/processed/*__test.jsonl"),
-    "train": os.path.join(current_dir, "..", "data/processed/*__train.jsonl"),
-    "traindev": os.path.join(current_dir, "..", "data/processed/*__traindev.jsonl"),
-    "dev": os.path.join(current_dir, "..", "data/processed/*__dev.jsonl"),
-    "predictions": os.path.join(
-        current_dir, "..", "data/predictions/*__predictions.jsonl"
-    ),
-}
-
-DOCCANO_FORMAT = os.path.join(current_dir, "..", "data/doccano_export/*")
+from scripts.variables import FILENAME_OPTIONS, DOCCANO_FORMAT, current_dir
 
 
 def check_datatype(datatype):

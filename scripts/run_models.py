@@ -1,13 +1,7 @@
 import os
-from scripts.prepare_data import SDG_MAP
+from scripts.variables import SDG_MAP
 import importlib
 import dill
-
-current_dir = os.path.dirname(__file__)
-
-MODEL_PATH_TEMPLATE = lambda sdg, model_name: os.path.join(
-    current_dir, "..", f"{sdg}__{model_name}.dill"
-)
 
 
 def load_model(file_path):
