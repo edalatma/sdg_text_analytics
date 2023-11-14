@@ -20,7 +20,10 @@ FILENAME_OPTIONS = {
 }
 
 # DOCCANO EXPORT DATA DIRS
-DOCCANO_FORMAT = os.path.join(current_dir, "..", "data/doccano_export/*")
+DOCCANO_DIRS_PATH = os.path.join(current_dir, "..", "data/doccano_export/*")
+DOCCANO_EXPORTS_TEMPLATE = lambda project_name: os.path.join(
+    current_dir, "..", f"data/doccano_export/{project_name}/*.jsonl"
+)
 
 # MODEL FILENAME
 GET_MODEL_FILENAME = lambda sdg, model_name: f"{sdg}__{model_name}.dill"

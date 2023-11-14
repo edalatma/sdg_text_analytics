@@ -1,7 +1,11 @@
 import pandas as pd
 from glob import glob
 import os
-from scripts.variables import FILENAME_OPTIONS, DOCCANO_FORMAT, current_dir
+from scripts.variables import (
+    FILENAME_OPTIONS,
+    DOCCANO_DIRS_PATH,
+    DOCCANO_EXPORTS_TEMPLATE,
+)
 
 
 def check_datatype(datatype):
@@ -178,22 +182,18 @@ def get_doccano_export_paths():
     - Generator: Yields a tuple containing the project name and corresponding list of Pandas
         DataFrames for each directory
     """
-    project_paths = glob(DOCCANO_FORMAT)
+    project_paths = glob(DOCCANO_DIRS_PATH)
 
     for project_path in project_paths:
         project_name = os.path.basename(project_path)
 
-        dataframe_paths = glob(
-            os.path.join(
-                current_dir, "..", f"data/doccano_export/{project_name}/*.jsonl"
-            )
-        )
+        dataframe_paths = glob(DOCCANO_EXPORTS_TEMPLATE(project_name))
         dataframes = [load_data(path) for path in dataframe_paths]
         yield project_name, dataframes
 
 
 def prepare_dirs():
-    directory = os.path.dirname(DOCCANO_FORMAT)
+    directory = os.path.dirname(DOCCANO_DIRS_PATH)
     if not os.path.exists(directory):
         os.makedirs(directory)
 
