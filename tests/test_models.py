@@ -1,5 +1,5 @@
 import unittest
-from scripts.run_models import iterate_models, load_model
+from scripts.run_models import iterate_model_files, load_model
 
 
 class TestMakePredictionFunction(unittest.TestCase):
@@ -68,7 +68,7 @@ def load_tests(loader, standard_tests, pattern):
     test_suite = unittest.TestSuite()
 
     # Iterate over Python files in the models directory
-    for filename, textanalytics_class in iterate_models():
+    for model_name, textanalytics_class in iterate_model_files():
 
         class TestImplementation(TestMakePredictionFunction):
             def setUp(self):

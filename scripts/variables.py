@@ -50,9 +50,13 @@ PROJECTNAME_DATA_PATHS = {
 MODEL_TEMPLATE = lambda sdg="*", model_name="*": PREPARE_DATA_PATH(
     f"trained_models/{sdg}-{model_name}.dill"
 )
+GET_MODEL_DETAILS = lambda filename: filename.replace(".dill", "").split("-")
+
 # Prediction paths
-PREDICTIONS_TEMPLATE = lambda sdg="*", model_name="*": PREPARE_DATA_PATH(
-    f"predictions/{sdg}-{model_name}__predictions.jsonl"
+PREDICTIONS_TEMPLATE = (
+    lambda sdg="*", model_name="*", project_name="*": PREPARE_DATA_PATH(
+        f"predictions/{sdg}-{model_name}-{project_name}__predictions.jsonl"
+    )
 )
 # Paths that use "sdg-model_name"
 SDGMODEL_DATA_PATHS = {

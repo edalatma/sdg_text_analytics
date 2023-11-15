@@ -1,13 +1,21 @@
 import os
-from scripts.variables import SDG_MAP, MODEL_TEMPLATE
+from scripts.variables import (
+    SDG_MAP,
+    MODEL_TEMPLATE,
+    GET_MODEL_DETAILS,
+    PREDICTIONS_TEMPLATE,
+)
 import importlib
 import dill
 from scripts.file_org import (
     get_all_project_names,
     load_data,
     get_file_path,
+    iterdatatype_data,
 )
 from scripts.prepare_data import prepare_labels
+from glob import glob
+import json
 
 
 def load_model(file_path):
@@ -26,19 +34,27 @@ def load_model(file_path):
     return loaded_model
 
 
-def iterate_models():
+def iterate_model_files():
     # Get the path to the models directory
     model_path = os.path.join(os.path.dirname(__file__), "..", "models")
 
     # Iterate over Python files in the models directory
     for filename in os.listdir(model_path):
         if filename.endswith(".py") and not filename.startswith("__"):
-            module_name = os.path.splitext(filename)[0]
-            module = importlib.import_module(f"models.{module_name}")
+            model_name = os.path.splitext(filename)[0]
+            module = importlib.import_module(f"models.{model_name}")
 
             # Check if the module has a "predict" function
             if hasattr(module, "TextAnalyticsModel"):
-                yield filename, module.TextAnalyticsModel
+                yield model_name, module.TextAnalyticsModel
+
+
+def iterate_saved_models():
+    for model_path in glob(MODEL_TEMPLATE()):
+        model_instance = load_model(model_path)
+        filename = os.path.basename(model_path)
+        sdg, model_name = GET_MODEL_DETAILS(filename)
+        yield sdg, model_name, model_instance
 
 
 def train_models():
@@ -78,11 +94,26 @@ def train_models():
     #############
     for sdg in SDG_MAP:
         prepared_labels = prepare_labels(labels, sdg)
-        for model_name, model in iterate_models():
+        for model_name, model in iterate_model_files():
             model_instance = model(sdg)
             model_instance.train(text, prepared_labels)
             model_filepath = MODEL_TEMPLATE(sdg, model_name)
             model_instance.save(model_filepath)
+
+
+def save_predictions(path, predictions):
+    """Save predictions in json file in list format."""
+    with open(path, "w") as f:
+        json.dump(predictions, indent=4)
+
+
+def predict_models(datatype):
+    for project_name, data in iterdatatype_data(datatype):
+        text_list = data["text"]
+        for sdg, model_name, model_instance in iterate_saved_models():
+            predictions = [model_instance.predict(text) for text in text_list]
+            prediction_path = PREDICTIONS_TEMPLATE(sdg, model_name, project_name)
+            save_predictions(prediction_path, predictions)
 
 
 def main():
