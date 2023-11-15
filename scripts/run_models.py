@@ -111,7 +111,10 @@ def predict_models(datatype):
     for project_name, data in iterdatatype_data(datatype):
         text_list = data["text"]
         for sdg, model_name, model_instance in iterate_saved_models():
-            predictions = [model_instance.predict(text) for text in text_list]
+            predictions = [
+                dict(index=i, text=text, prediction=model_instance.predict(text))
+                for i, text in text_list.items()
+            ]
             prediction_path = PREDICTIONS_TEMPLATE(sdg, model_name, project_name)
             save_predictions(prediction_path, predictions)
 
