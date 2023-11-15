@@ -99,6 +99,27 @@ def prepare_raw(project_name: str, dataframes: list[pd.DataFrame]):
     save_data(combined_df, "raw", project_name)
 
 
+def prepare_labels(labels: list[list[str]], sdg: str):
+    """
+    Convert a list of lists of strings to a list of 1/0 based on whether each sublist
+    contains a particular sdg.
+
+    Parameters:
+    - data (list): List of lists of strings.
+    - sdg (str): String to check
+
+    Returns:
+    - list: List of 1/0 values indicating the presence of a string in each sublist.
+    """
+    labels = []
+    for sublist in labels:
+        if sdg in sublist:
+            labels.append(1)
+        else:
+            labels.append(0)
+    return labels
+
+
 def main():
     """
     Take project files from /data/doccano_export and process and split the data.
