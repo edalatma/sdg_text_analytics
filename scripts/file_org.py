@@ -153,7 +153,7 @@ def get_project_mappings(project_name):
     return project_mappings
 
 
-def get_all_project_names():
+def get_all_project_names(datatype: str = None):
     """
     Gets all the project names available across all files in the "data" directory.
 
@@ -162,11 +162,13 @@ def get_all_project_names():
     """
     all_project_names = set()
 
-    for datatype, query_template in PROJECTNAME_DATA_PATHS.items():
+    for dt, query_template in PROJECTNAME_DATA_PATHS.items():
+        if datatype is not None and dt != datatype:
+            continue
         matching_paths = glob(query_template())
 
         # Extract project names from the file paths
-        project_names = [get_project_name(datatype, path) for path in matching_paths]
+        project_names = [get_project_name(dt, path) for path in matching_paths]
 
         # Add the project names to the set to ensure uniqueness
         all_project_names.update(project_names)
