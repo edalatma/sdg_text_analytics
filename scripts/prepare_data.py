@@ -87,6 +87,14 @@ def prepare_raw(project_name: str, dataframes: list[pd.DataFrame]):
 
     combined_df["cats"] = combined_df["cats"].apply(map_cats)
     combined_df["entities"] = combined_df["entities"].apply(map_ents)
+    combined_df["labels"] = combined_df.apply(
+        lambda row: list(
+            set(row["cats"]).union({sdg for _, _, sdg in row["entities"]})
+        ),
+        axis=1,
+    )
+
+    combined_df["has_sdg"] = combined_df["labels"].apply(lambda labels: len(labels) > 0)
 
     save_data(combined_df, "raw", project_name)
 
