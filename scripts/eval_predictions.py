@@ -24,7 +24,7 @@ def load_original_file(prediction_path):
     original_filepath = PROJECTNAME_DATA_PATHS[datatype](project_name)
     original_data = load_data(original_filepath)
 
-    return sdg, model_name, original_data
+    return sdg, model_name, project_name, datatype, original_data
 
 
 def get_original_label(original_data, sdg, index):
@@ -69,7 +69,9 @@ def compare(pred, ori):
 def eval_predictions():
     all_results = []
     for filepath, predictions in iter_prediction_files():
-        sdg, model_name, original_data = load_original_file(filepath)
+        sdg, model_name, project_name, datatype, original_data = load_original_file(
+            filepath
+        )
 
         all_comparisons = []
         original_labels = []
@@ -86,6 +88,8 @@ def eval_predictions():
             dict(
                 sdg=sdg,
                 model_name=model_name,
+                project_name=project_name,
+                datatype=datatype,
                 **get_metrics(overall_comparisons),
             )
         )
