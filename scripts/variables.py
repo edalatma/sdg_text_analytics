@@ -54,15 +54,21 @@ GET_MODEL_DETAILS = lambda filename: filename.replace(".dill", "").split("-")
 
 # Prediction paths
 PREDICTIONS_TEMPLATE = (
-    lambda sdg="*", model_name="*", project_name="*": PREPARE_DATA_PATH(
-        f"predictions/{sdg}-{model_name}-{project_name}__predictions.jsonl"
+    lambda sdg="*", model_name="*", project_name="*", datatype="*": PREPARE_DATA_PATH(
+        f"predictions/{sdg}-{model_name}-{project_name}-{datatype}__predictions.jsonl"
     )
 )
+GET_PREDICTION_DETAILS = lambda filename: filename.replace(
+    "__predictions.jsonl", ""
+).split("-")
 # Paths that use "sdg-model_name"
 SDGMODEL_DATA_PATHS = {
     "models": MODEL_TEMPLATE,
     "predictions": PREDICTIONS_TEMPLATE,
 }
+
+# Aggregated performance path
+ALL_EVAL_RESULTS_PATH = PREPARE_DATA_PATH("all_eval_results.jsonl")
 
 ##################
 # DATA VARIABLES #

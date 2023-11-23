@@ -16,6 +16,7 @@ from scripts.file_org import (
 from scripts.prepare_data import prepare_labels
 from glob import glob
 import json
+import pandas as pd
 
 
 def load_model(file_path):
@@ -103,8 +104,8 @@ def train_models():
 
 def save_predictions(path, predictions):
     """Save predictions in json file in list format."""
-    with open(path, "w") as f:
-        json.dump(predictions, indent=4)
+    prediction_df = pd.DataFrame(predictions)
+    prediction_df.to_json(path, orient="records", lines=True)
 
 
 def predict_models(datatype):
@@ -115,7 +116,9 @@ def predict_models(datatype):
                 dict(index=i, text=text, prediction=model_instance.predict(text))
                 for i, text in text_list.items()
             ]
-            prediction_path = PREDICTIONS_TEMPLATE(sdg, model_name, project_name)
+            prediction_path = PREDICTIONS_TEMPLATE(
+                sdg, model_name, project_name, datatype
+            )
             save_predictions(prediction_path, predictions)
 
 
