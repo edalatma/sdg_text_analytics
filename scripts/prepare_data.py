@@ -111,13 +111,13 @@ def prepare_labels(labels: list[list[str]], sdg: str):
     Returns:
     - list: List of 1/0 values indicating the presence of a string in each sublist.
     """
-    labels = []
+    processed_labels = []
     for sublist in labels:
         if sdg in sublist:
-            labels.append(1)
+            processed_labels.append(1)
         else:
-            labels.append(0)
-    return labels
+            processed_labels.append(0)
+    return processed_labels
 
 
 def main():
