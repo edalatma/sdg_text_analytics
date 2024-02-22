@@ -58,7 +58,7 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
             "classifier__penalty": ["l2"],
         }
 
-        grid_search = GridSearchCV(pipeline, hyperparameters, cv=5)
+        grid_search = GridSearchCV(pipeline, hyperparameters, cv=5, n_jobs=-1)
 
         grid_search.fit(list(training_text), list(training_labels))
         model = grid_search.best_estimator_
