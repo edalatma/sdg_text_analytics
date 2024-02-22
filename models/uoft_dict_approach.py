@@ -30,7 +30,8 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
 
         # Implement rules-based prediction logic
         for keyword in self.dictionary[self.sdg]:
-            match = bool(re.search(keyword, text))
+            query = rf"\b{keyword}"
+            match = bool(re.search(query, text))
             if match:
                 metadata["keyword_matches"].append(keyword)
                 prediction = 1
