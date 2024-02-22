@@ -112,4 +112,22 @@ SDG_MAP = {
     "SDG 15": "15 - Life on Land",
     "SDG 16": "16 - Peace, Justice, and Strong Institutions",
 }
+SDG_COLORS = {
+    "SDG 1": "#e5233d",
+    "SDG 2": "#dda73a",
+    "SDG 3": "#4ca146",
+    "SDG 4": "#c5192d",
+    "SDG 5": "#ef402c",
+    "SDG 6": "#27bfe6",
+    "SDG 7": "#fbc412",
+    "SDG 8": "#a31c44",
+    "SDG 9": "#f26a2d",
+    "SDG 10": "#e01483",
+    "SDG 11": "#f89d2a",
+    "SDG 12": "#bf8d2c",
+    "SDG 13": "#407f46",
+    "SDG 14": "#1f97d4",
+    "SDG 15": "#59ba48",
+    "SDG 16": "#126a9f",
+}
 REVERSE_SDG_MAP = dict(zip(SDG_MAP.values(), SDG_MAP.keys()))
