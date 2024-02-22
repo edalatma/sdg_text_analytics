@@ -66,7 +66,7 @@ def train_models():
     # GET DATA
     ##########
     # Get the list of available projects and offer them as options for training
-    available_projects = get_all_project_names("train")
+    available_projects = sorted(get_all_project_names("train"))
     assert len(available_projects) > 0, "No processed datasets available."
 
     option_list = "\n".join(
