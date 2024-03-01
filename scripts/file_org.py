@@ -1,7 +1,10 @@
 import pandas as pd
 from glob import glob
 import os
-from scripts.variables import (
+import sys
+
+sys.path.append("./scripts")
+from variables import (
     PROJECTNAME_DATA_PATHS,
     SDGMODEL_DATA_PATHS,
     DOCCANO_EXPORT_DIRS,

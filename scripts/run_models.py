@@ -1,5 +1,9 @@
 import os
-from scripts.variables import (
+import sys
+
+sys.path.append(".")
+sys.path.append("./scripts")
+from variables import (
     SDG_MAP,
     MODEL_TEMPLATE,
     GET_MODEL_DETAILS,
@@ -7,13 +11,13 @@ from scripts.variables import (
 )
 import importlib
 import dill
-from scripts.file_org import (
+from file_org import (
     get_all_project_names,
     load_data,
     get_file_path,
     iterdatatype_data,
 )
-from scripts.prepare_data import prepare_labels
+from prepare_data import prepare_labels
 from glob import glob
 import json
 import pandas as pd
@@ -66,7 +70,7 @@ def train_models():
     # GET DATA
     ##########
     # Get the list of available projects and offer them as options for training
-    available_projects = sorted(get_all_project_names("train"))
+    available_projects = sorted(get_all_project_names("traindev"))
     assert len(available_projects) > 0, "No processed datasets available."
 
     option_list = "\n".join(
@@ -77,7 +81,7 @@ def train_models():
     )
 
     project_index = input(
-        f"Which project would you like to train the model on:\n{option_list}\n\nSelect the project for training:"
+        f"Which project would you like to train the model on:\n{option_list}\n\nSelect the project for training: "
     )
     if project_index.isdigit():
         project_index = int(project_index)
@@ -87,7 +91,7 @@ def train_models():
     ), f"Invalid selection. Please choose one of the available options, [{list(range(len(available_projects)))}]"
 
     selected_project = available_projects[project_index]
-    data = load_data(get_file_path("train", selected_project))
+    data = load_data(get_file_path("traindev", selected_project))
     text, labels = data["text"], data["labels"]
 
     #############

@@ -1,4 +1,7 @@
-from scripts.base_model import TextAnalyticsFunctions
+import sys
+
+sys.path.append("../scripts")
+from base_model import TextAnalyticsFunctions
 from sklearn.model_selection import KFold, GridSearchCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression

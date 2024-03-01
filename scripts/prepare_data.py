@@ -1,12 +1,16 @@
+import sys
+
+sys.path.append("./scripts")
+sys.path.append(".")
 from sklearn.model_selection import train_test_split, StratifiedKFold
-from scripts.file_org import (
+from file_org import (
     get_doccano_export_paths,
     save_data,
     get_file_path,
     load_data,
 )
 import pandas as pd
-from scripts.variables import SEED, REQUIRED_COLS, REVERSE_SDG_MAP
+from variables import SEED, REQUIRED_COLS, REVERSE_SDG_MAP
 
 """
 TODO:
