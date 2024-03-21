@@ -70,7 +70,7 @@ def train_models():
     # GET DATA
     ##########
     # Get the list of available projects and offer them as options for training
-    available_projects = sorted(get_all_project_names("traindev"))
+    available_projects = sorted(get_all_project_names("raw"))
     assert len(available_projects) > 0, "No processed datasets available."
 
     option_list = "\n".join(
@@ -91,17 +91,16 @@ def train_models():
     ), f"Invalid selection. Please choose one of the available options, [{list(range(len(available_projects)))}]"
 
     selected_project = available_projects[project_index]
-    data = load_data(get_file_path("traindev", selected_project))
-    text, labels = data["text"], data["labels"]
 
     #############
     # TRAIN MODEL
     #############
     for sdg in SDG_MAP:
-        prepared_labels = prepare_labels(labels, sdg)
+        data = load_data(get_file_path("traindev", selected_project, sdg))
+        text, labels = data["text"], data["train_label"]
         for model_name, model in iterate_model_files():
             model_instance = model(sdg)
-            model_instance.train(text, prepared_labels)
+            model_instance.train(text, labels)
             model_filepath = MODEL_TEMPLATE(sdg, model_name)
             model_instance.save(model_filepath)
 
@@ -113,9 +112,9 @@ def save_predictions(path, predictions):
 
 
 def predict_models(datatype):
-    for project_name, data in iterdatatype_data(datatype):
-        text_list = data["text"]
-        for sdg, model_name, model_instance in iterate_saved_models():
+    for sdg, model_name, model_instance in iterate_saved_models():
+        for project_name, data in iterdatatype_data(datatype, sdg):
+            text_list = data["text"]
             predictions = [
                 dict(index=i, text=text, prediction=model_instance.predict(text))
                 for i, text in text_list.items()

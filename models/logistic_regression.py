@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("../scripts")
 from base_model import TextAnalyticsFunctions
-from sklearn.model_selection import KFold, GridSearchCV
+from sklearn.model_selection import StratifiedKFold, GridSearchCV
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import Pipeline
@@ -10,6 +10,7 @@ from sklearn.preprocessing import FunctionTransformer
 import nltk
 from nltk.stem import PorterStemmer
 from nltk.corpus import stopwords
+from variables import SEED
 
 
 class TextAnalyticsModel(TextAnalyticsFunctions):
@@ -61,7 +62,8 @@ class TextAnalyticsModel(TextAnalyticsFunctions):
             "classifier__penalty": ["l2"],
         }
 
-        grid_search = GridSearchCV(pipeline, hyperparameters, cv=5, n_jobs=-1)
+        skf = StratifiedKFold(n_splits=5, random_state=SEED, shuffle=True)
+        grid_search = GridSearchCV(pipeline, hyperparameters, cv=skf, n_jobs=-1)
 
         grid_search.fit(list(training_text), list(training_labels))
         model = grid_search.best_estimator_

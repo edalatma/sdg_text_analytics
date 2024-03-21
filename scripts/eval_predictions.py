@@ -21,7 +21,7 @@ def load_original_file(prediction_path):
     filename = os.path.basename(prediction_path)
     sdg, model_name, project_name, datatype = GET_PREDICTION_DETAILS(filename)
 
-    original_filepath = PROJECTNAME_DATA_PATHS[datatype](project_name)
+    original_filepath = PROJECTNAME_DATA_PATHS[datatype](sdg, project_name)
     original_data = load_data(original_filepath)
 
     return sdg, model_name, project_name, datatype, original_data

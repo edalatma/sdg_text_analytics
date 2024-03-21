@@ -22,20 +22,22 @@ DOCCANO_EXPORT_DIRS = PREPARE_DATA_PATH("doccano_export/*")
 ############################
 
 # Points to combined doccano export paths
-RAW_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(f"raw/{project_name}.jsonl")
+RAW_TEMPLATE = lambda sdg=False, project_name="*": PREPARE_DATA_PATH(
+    f"raw/{project_name}.jsonl"
+)
 
 # Points to train, dev, test, traindev paths
-TEST_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
-    f"processed/{project_name}__test.jsonl"
+TEST_TEMPLATE = lambda sdg="*", project_name="*": PREPARE_DATA_PATH(
+    f"processed/{sdg}_{project_name}__test.jsonl"
 )
-TRAIN_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
-    f"processed/{project_name}__train.jsonl"
+TRAIN_TEMPLATE = lambda sdg="*", project_name="*": PREPARE_DATA_PATH(
+    f"processed/{sdg}_{project_name}__train.jsonl"
 )
-TRAINDEV_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
-    f"processed/{project_name}__traindev.jsonl"
+TRAINDEV_TEMPLATE = lambda sdg="*", project_name="*": PREPARE_DATA_PATH(
+    f"processed/{sdg}_{project_name}__traindev.jsonl"
 )
-DEV_TEMPLATE = lambda project_name="*": PREPARE_DATA_PATH(
-    f"processed/{project_name}__dev.jsonl"
+DEV_TEMPLATE = lambda sdg="*", project_name="*": PREPARE_DATA_PATH(
+    f"processed/{sdg}_{project_name}__dev.jsonl"
 )
 # Paths that use "project_name"
 PROJECTNAME_DATA_PATHS = {

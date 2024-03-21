@@ -54,7 +54,7 @@ def load_data(path):
     return data
 
 
-def save_data(data, datatype, project_name):
+def save_data(data, datatype, project_name, sdg):
     """
     Saves the given data to the specified file path.
 
@@ -62,12 +62,12 @@ def save_data(data, datatype, project_name):
     - data (pd.DataFrame): The Pandas DataFrame to be saved.
     - path (str): The file path where the data will be saved.
     """
-    path = get_file_path(datatype, project_name)
+    path = get_file_path(datatype, project_name, sdg)
     data.to_json(path, orient="records", lines=True)
 
 
 @check_datatype_decorator
-def iterdatatype_data(datatype: str) -> tuple[str, pd.DataFrame]:
+def iterdatatype_data(datatype: str, sdg: str) -> tuple[str, pd.DataFrame]:
     """
     Iterates over JSON files based on the specified datatype.
 
@@ -95,7 +95,7 @@ def iterdatatype_data(datatype: str) -> tuple[str, pd.DataFrame]:
         # Your data processing logic here
     ```
     """
-    query = PROJECTNAME_DATA_PATHS[datatype]()
+    query = PROJECTNAME_DATA_PATHS[datatype](sdg=sdg)
     for path in glob(query):
         project_name = get_project_name(datatype, path)
         data = load_data(path)
@@ -116,11 +116,14 @@ def get_project_name(datatype: str, path: str) -> str:
     """
     base_name = os.path.basename(path)
     project_name = base_name.replace(f"__{datatype}", "").replace(".jsonl", "")
+    if "SDG " in project_name:
+        project_sdg, project_name = project_name.split("_", maxsplit=1)
+
     return project_name
 
 
 @check_datatype_decorator
-def get_file_path(datatype: str, project_name: str):
+def get_file_path(datatype: str, project_name: str, sdg=False):
     """
     Generates the file path based on the provided project name and datatype.
 
@@ -132,7 +135,7 @@ def get_file_path(datatype: str, project_name: str):
     - str: The file path corresponding to the project and datatype.
     """
 
-    file_path = PROJECTNAME_DATA_PATHS[datatype](project_name)
+    file_path = PROJECTNAME_DATA_PATHS[datatype](sdg, project_name)
     return file_path
 
 

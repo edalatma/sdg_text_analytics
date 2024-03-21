@@ -18,7 +18,7 @@ TODO:
 """
 
 
-def split_data(df):
+def split_data(df, sdg):
     """
     Split a DataFrame into train, dev, test, and train+dev sets.
 
@@ -33,8 +33,12 @@ def split_data(df):
     - train_dev_set (pd.DataFrame): The combination of train and dev sets (80% of the input DataFrame).
     """
 
+    df["train_label"] = prepare_labels(df["labels"], sdg)
+
     # Split the data into train_dev and test sets
-    train_dev_set, test_set = train_test_split(df, test_size=0.2, random_state=SEED)
+    train_dev_set, test_set = train_test_split(
+        df, test_size=0.2, random_state=SEED, stratify=df["train_label"]
+    )
 
     # Further split train_dev_set into train and dev sets
     # 80% * 0.25 --> 20% dev set
@@ -45,11 +49,11 @@ def split_data(df):
     return train_set, dev_set, test_set, train_dev_set
 
 
-def save_splits(project_name, train_set, dev_set, test_set, train_dev_set):
-    save_data(train_set, "train", project_name)
-    save_data(dev_set, "dev", project_name)
-    save_data(test_set, "test", project_name)
-    save_data(train_dev_set, "traindev", project_name)
+def save_splits(project_name, train_set, dev_set, test_set, train_dev_set, sdg):
+    save_data(train_set, sdg=sdg, datatype="train", project_name=project_name)
+    save_data(dev_set, sdg=sdg, datatype="dev", project_name=project_name)
+    save_data(test_set, sdg=sdg, datatype="test", project_name=project_name)
+    save_data(train_dev_set, sdg=sdg, datatype="traindev", project_name=project_name)
 
 
 def check_cols(df: pd.DataFrame, cols: list):
@@ -100,7 +104,7 @@ def prepare_raw(project_name: str, dataframes: list[pd.DataFrame]):
 
     combined_df["has_sdg"] = combined_df["labels"].apply(lambda labels: len(labels) > 0)
 
-    save_data(combined_df, "raw", project_name)
+    save_data(combined_df, "raw", project_name, False)
 
 
 def prepare_labels(labels: list[list[str]], sdg: str):
@@ -131,8 +135,9 @@ def main():
     for project_name, dataframes in get_doccano_export_paths():
         prepare_raw(project_name, dataframes)
         raw_df = load_data(get_file_path("raw", project_name))
-        split_dfs = split_data(raw_df)
-        save_splits(project_name, *split_dfs)
+        for sdg in REVERSE_SDG_MAP.values():
+            split_dfs = split_data(raw_df, sdg)
+            save_splits(project_name, *split_dfs, sdg)
 
 
 if __name__ == "__main__":
