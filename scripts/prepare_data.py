@@ -135,6 +135,10 @@ def main():
     for project_name, dataframes in get_doccano_export_paths():
         prepare_raw(project_name, dataframes)
         raw_df = load_data(get_file_path("raw", project_name))
+        if "labels" not in raw_df.columns:
+            print(f"Skipping {project_name} as it's missing the 'labels' column.")
+            continue
+
         for sdg in REVERSE_SDG_MAP.values():
             split_dfs = split_data(raw_df, sdg)
             save_splits(project_name, *split_dfs, sdg)

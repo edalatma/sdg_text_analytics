@@ -111,17 +111,27 @@ def save_predictions(path, predictions):
     prediction_df.to_json(path, orient="records", lines=True)
 
 
-def predict_models(datatype):
+def predict_models(datatype, ignore_models=[], overwrite=True):
     for sdg, model_name, model_instance in iterate_saved_models():
+        if model_name in ignore_models:
+            print(f"Ignoring {model_name}")
+            continue
         for project_name, data in iterdatatype_data(datatype, sdg):
+            prediction_path = PREDICTIONS_TEMPLATE(
+                sdg, model_name, project_name, datatype
+            )
+
+            if not overwrite and os.path.exists(prediction_path):
+                print(
+                    f"Skipping {prediction_path}, as it exists and overwrite is set to False"
+                )
+                continue
+
             text_list = data["text"]
             predictions = [
                 dict(index=i, text=text, prediction=model_instance.predict(text))
                 for i, text in text_list.items()
             ]
-            prediction_path = PREDICTIONS_TEMPLATE(
-                sdg, model_name, project_name, datatype
-            )
             save_predictions(prediction_path, predictions)
 
 
